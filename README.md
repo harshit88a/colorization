@@ -14,11 +14,11 @@ Colorizing B/W images is a complex and ambiguous task since a grayscale image di
 Working in LAB Color Space
 While images are typically stored in RGB (Red, Green, Blue), for colorization tasks it’s common to use the LAB color space:
 
-L (Lightness): The grayscale "intensity" channel, what you see in a B/W photo.
+**L (Lightness):** The grayscale "intensity" channel, what you see in a B/W photo.
 
-A: Green-Red chrominance channel.
+**A:** Green-Red chrominance channel.
 
-B: Blue-Yellow chrominance channel.
+**B:** Blue-Yellow chrominance channel.
 
 Using LAB allows the model to focus solely on predicting the "A" and "B" (color) components, treating the L channel as input (i.e., the grayscale image).
 
@@ -43,9 +43,9 @@ File : colourization_using_cnn.ipynb
 
 A deep encoder-decoder CNN architecture is used:
 
-- Encoder: Stacks of convolution + pooling layers extract hierarchical features.
+- **Encoder:** Stacks of convolution + pooling layers extract hierarchical features.
 
-- Decoder: Upsampling + convolution layers reconstruct the AB channels.
+- **Decoder:** Upsampling + convolution layers reconstruct the AB channels.
 
 - Optionally, skip connections (U-Net style) help preserve spatial details.
 
@@ -56,11 +56,11 @@ File: colourization_using_gans.ipynb
 
 A conditional GAN (cGAN) setup is implemented, inspired by Pix2Pix:
 
-- Generator: A U-Net that takes grayscale L-channel as input and generates AB channels.
+- **Generator**:** A U-Net that takes grayscale L-channel as input and generates AB channels.
 
-- Discriminator: A PatchGAN that classifies whether a pair (L, AB) is real or generated.
+- **Discriminator:** A PatchGAN that classifies whether a pair (L, AB) is real or generated.
 
-- Loss Functions:
+- **Loss Functions:**
 
     - Generator: Adversarial loss + L1 loss
 
@@ -72,15 +72,15 @@ A conditional GAN (cGAN) setup is implemented, inspired by Pix2Pix:
 
 ### Training
 
-- Dataset: Dataset: 130k Images (128x128) - Universal Image Embeddings  (https://www.kaggle.com/datasets/rhtsingh/google-universal-image-embeddings-128x128/data)
+- **Dataset:** Dataset: 130k Images (128x128) - Universal Image Embeddings  (https://www.kaggle.com/datasets/rhtsingh/google-universal-image-embeddings-128x128/data)
 
-- Input: Grayscale (L channel) version of each image.
+- **Input:** Grayscale (L channel) version of each image.
 
-- Target: True color (AB channels or RGB) version of the same image.
+- **Target**:** True color (AB channels or RGB) version of the same image.
 
--  Loss: Mean squared error (MSE) between predicted and ground truth color channels.
+- **Loss:** Mean squared error (MSE) between predicted and ground truth color channels.
 
-- Device: Training on Colab L4 GPU for CNN and A100 for GANs
+- **Device:** Training on Colab L4 GPU for CNN and A100 for GANs
 
 - Training progresses for several epochs (~20 recommended), optimizing the model's ability to "hallucinate" realistic colors.
 
@@ -106,7 +106,7 @@ All results are saved in the output/ folder including:
 ### Results
 Below is a qualitative comparison between CNN and GAN-based colorization results.
 
-| CNN Output| 	GAN Output| 
+| **CNN Output**| 	**GAN Output**| 
 |----------|----------|
 |<img src="output_cnn/elephant-8994442_640.jpg_colorized.png" width="400"/> |<img src="output_gan/elephant-8994442_640.jpg_colorized.png" width="400"/> |
 |<img src="output_cnn/eye-3221498_640.jpg_colorized.png" width="400"/> |<img src="output_gan/eye-3221498_640.jpg_colorized.png" width="400"/> |
@@ -122,6 +122,20 @@ Below is a qualitative comparison between CNN and GAN-based colorization results
 - The GAN model generates vibrant and visually appealing outputs but sometimes with inaccurate or unrealistic colors due to training instability and mode collapse.
 
 - GANs excel in visual diversity but require careful tuning and regularization.
+
+### Batch Colorization Script
+
+To convert all grayscale (black-and-white) images from the /bw_img folder into color images using your trained models, two Python scripts have been added:
+
+- colour_cnn.py – uses the CNN-based model
+
+- colour_gan.py – uses the GAN-based model
+
+Input folder: All grayscale images should be placed in the /bw_img/ directory.
+
+Output folder: The colorized images will be saved in the respective output folder defined in the script.
+
+Run ```python3 colour_cnn.py``` or ```python3 colour_gan.py``` in your terminal.
 
 ### Future Work
 #### 1. Diffusion-Based Colorization
